@@ -1,0 +1,577 @@
+@font-face {
+    font-family: "saintcarnsolas";
+    src: url("https://sc-25.cdn.cbj-x.com/saintcarnsolas.woff") format("woff"),
+        url("https://sc-25.cdn.cbj-x.com/saintcarnsolas.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "a dripping marker";
+    src: url("https://sc-25.cdn.cbj-x.com/adrip1.woff") format("woff"),
+        url("https://sc-25.cdn.cbj-x.com/adrip1.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SDDystopian";
+    src: url("https://sc-25.cdn.cbj-x.com/SDDystopian.woff") format("woff"),
+        url("https://sc-25.cdn.cbj-x.com/SDDystopian.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body * {
+    font-family: "SaintCarnSolas";
+    color: var(--off-white);
+}
+
+button {
+    background-color: lightgrey;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 2em;
+    transition: scale 0.1s ease-in-out;
+    box-shadow: 2px 2px rgba(120, 120, 120, 15);
+    color: var(--terminal-green);
+
+    &:hover {
+        background-color: white;
+        scale: 110%;
+        cursor: pointer;
+    }
+
+    &#answer-btn {
+        margin: 10px;
+    }
+
+    &#start {
+        margin: 25px;
+    }
+}
+
+h2 {
+    text-wrap: wrap;
+    margin: 10px 25px;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+    padding: 0 50px;
+
+    input {
+        border: none;
+        padding: 10px;
+        width: 100%;
+    }
+}
+
+
+
+html,
+body {
+    --game-bg-color: #171717;
+    --sc-orange: #e05a00;
+    --sc-red: #693126;
+    --blue: #005ae0;
+    --light-blue: #3679dd;
+    --dark-blue: #0043a7;
+    --red: #e02200;
+    --yellow: #fcf300;
+    --off-white: #e4ffe4;
+    --terminal-green: #00872b;
+    --correct: rgb(83, 141, 78);
+    --present: rgb(181, 159, 59);
+    --absent: rgb(58, 58, 60);
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    transition: transform 0.5s;
+
+}
+
+.carnival {
+    background-image: url("https://sc-25.cdn.cbj-x.com/backdrop.webp");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+
+    /* Unreasonable styling requests */
+    @media only screen and (max-width: 450px) {
+        * {
+            scale: 90%;
+        }
+    }
+
+    @media only screen and (max-width: 350px) {
+        * {
+            scale: 80%;
+        }
+    }
+
+    @media only screen and (max-width: 250px) {
+        * {
+            scale: 70%;
+        }
+    }
+}
+
+main {
+    margin: 50px;
+    padding: 1.2rem;
+    background-image: url("https://sc-25.cdn.cbj-x.com/rust-backdrop.webp");
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 15px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 800px;
+}
+
+header {
+    background-image: url("https://sc-25.cdn.cbj-x.com/sign-black.webp");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    margin-bottom: -7rem;
+    z-index: 10;
+    padding: 1.4rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    rotate: 5deg;
+
+    h1 {
+        font-family: "SDDystopian", monospace;
+        color: var(--sc-orange);
+    }
+
+    p {
+        position: absolute;
+        font-family: "a dripping marker", Arial, sans-serif;
+        font-size: 2.2em;
+        color: var(--off-white);
+        letter-spacing: 5px;
+        rotate: -5deg;
+        margin: 1px;
+        bottom: 0;
+    }
+}
+
+.game {
+    position: relative;
+    min-height: 400px;
+    border: 20px solid var(--game-bg-color);
+    border-image: url("https://sc-25.cdn.cbj-x.com/nuts-n-lights-border.webp") 31% fill / 20px / 15px space;
+    background-color: var(--game-bg-color);
+    padding: 4rem 1rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    color: white;
+
+    * {
+        font-family: "saintcarnsolas", monospace;
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+.glitch-input-wrapper {
+    --bg-color: #0d0d0d;
+    --primary-color: #00601e;
+    --secondary-color: #e05a00;
+    --glitch-anim-duration: 0.4s;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    padding: 1rem;
+    margin-top: 0;
+}
+
+/* --- Container  --- */
+.input-container {
+    position: relative;
+    width: 19rem;
+}
+
+/* --- Input --- */
+.holo-input {
+    width: 90%;
+    height: 3.5rem;
+    background: rgba(13, 13, 13, 0.7);
+    border: none;
+    border-bottom: 2px solid #333;
+    outline: none;
+    padding: 0 1rem;
+    color: var(--off-white);
+    font-family: inherit;
+    font-size: 2rem;
+    caret-color: var(--dark-blue);
+    z-index: 10;
+    transition: background 0.3s ease,
+        border-color 0.3s ease;
+    text-align: center;
+}
+
+/* --- Floating Label --- */
+.input-label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: var(--off-white);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 11;
+}
+
+.holo-input:focus+.input-label,
+.holo-input:not(:placeholder-shown)+.input-label {
+    top: -1.5rem;
+    left: 0;
+    font-size: 1rem;
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+.holo-input:focus+.input-label::before,
+.holo-input:focus+.input-label::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #212121;
+}
+
+.holo-input:focus+.input-label::before {
+    color: var(--secondary-color);
+    animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.holo-input:focus+.input-label::after {
+    color: var(--off-white);
+    animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+}
+
+/* --- Decorative Layers --- */
+.input-border,
+.input-scanline,
+.input-glow,
+.input-corners {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.input-border {
+    border: 1px solid rgba(0, 242, 234, 0.2);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.corner {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--primary-color);
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+
+.corner-tl {
+    top: -0.3rem;
+    left: -0.3rem;
+    border-right: none;
+    border-bottom: none;
+}
+
+.corner-tr {
+    top: -0.3rem;
+    right: -0.3rem;
+    border-left: none;
+    border-bottom: none;
+}
+
+.corner-bl {
+    bottom: -0.3rem;
+    left: -0.3rem;
+    border-right: none;
+    border-top: none;
+}
+
+.corner-br {
+    bottom: -0.3rem;
+    right: -0.3rem;
+    border-left: none;
+    border-top: none;
+}
+
+.input-glow {
+    background: radial-gradient(ellipse at center,
+            rgba(0, 242, 234, 0.2) 0%,
+            transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.input-scanline {
+    height: 100%;
+    background: linear-gradient(to bottom,
+            transparent 0%,
+            rgba(0, 242, 234, 0.1) 48%,
+            rgba(0, 242, 234, 0.3) 50%,
+            rgba(0, 242, 234, 0.1) 52%,
+            transparent 100%);
+    opacity: 0;
+}
+
+/* --- Data Visualization --- */
+.input-data-stream {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 100%;
+    height: 0.3rem;
+    display: flex;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.1s;
+}
+
+.stream-bar {
+    flex-grow: 1;
+    background-color: var(--primary-color);
+    transition: transform 0.2s,
+        opacity 0.2s;
+    transform: scaleY(0);
+    transform-origin: bottom;
+}
+
+.holo-input:focus {
+    border-color: transparent;
+}
+
+.holo-input:focus~.input-border {
+    opacity: 1;
+    border-color: rgba(0, 242, 234, 0.5);
+}
+
+.holo-input:focus~.input-corners .corner {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-width: 3px;
+    opacity: 1;
+}
+
+.holo-input:focus~.input-glow {
+    opacity: 1;
+}
+
+.holo-input:focus~.input-scanline {
+    animation: scan-vertical 4s linear infinite;
+}
+
+.holo-input:focus~.input-data-stream {
+    opacity: 1;
+}
+
+.holo-input:focus~.input-data-stream .stream-bar {
+    animation: data-pulse 2s infinite;
+    animation-delay: calc(var(--i) * 0.1s);
+}
+
+/* --- Keyframes --- */
+@keyframes glitch-label {
+    0% {
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+    }
+
+    20% {
+        transform: translate(-0.2rem, 0.1rem);
+        clip-path: inset(50% 0 20% 0);
+    }
+
+    40% {
+        transform: translate(0.1rem, -0.1rem);
+        clip-path: inset(20% 0 60% 0);
+    }
+
+    60% {
+        transform: translate(-0.15rem, 0.1rem);
+        clip-path: inset(80% 0 5% 0);
+    }
+
+    80% {
+        transform: translate(0.15rem, -0.15rem);
+        clip-path: inset(30% 0 45% 0);
+    }
+
+    100% {
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes scan-vertical {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+
+    25% {
+        opacity: 0.5;
+    }
+
+    75% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+}
+
+@keyframes data-pulse {
+
+    0%,
+    100% {
+        transform: scaleY(0.2);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: scaleY(1);
+        opacity: 0.8;
+    }
+}
+
+.question {
+    border: 20px solid var(--game-bg-color);
+    border-image: url("https://sc-25.cdn.cbj-x.com/metal_border.webp") 25% fill;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    font-size: 1em;
+    background-color: black;
+    max-width: 450px;
+    height: 125px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    min-height: 200px;
+
+    h2 {
+        margin: 0px;
+        color: var(--terminal-green);
+    }
+}
+
+.status {
+    position: absolute;
+    left: 0;
+    translate: -100%;
+    height: 400px;
+
+    .questions {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        >div {
+            width: 75px;
+            height: 75px;
+            rotate: 270deg;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+        }
+
+        .unanswered {
+            background-image: url("https://sc-25.cdn.cbj-x.com/orange_light.webp");
+        }
+
+        .correct {
+            background-image: url("https://sc-25.cdn.cbj-x.com/green_light.webp");
+        }
+
+        .incorrect {
+            background-image: url("https://sc-25.cdn.cbj-x.com/red_light.webp")
+        }
+    }
+}
+
+@keyframes intrude {
+    from {
+        translate: -100%;
+    }
+
+    to {
+        translate: 0;
+    }
+}
+
+.countdown {
+    margin-top: -50px;
+    background-image: url("https://sc-25.cdn.cbj-x.com/green-button.webp");
+    width: 140px;
+    height: 63.16px;
+    overflow: hidden;
+
+    &, & * {
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        position: relative;
+    }
+
+    .time {
+        background-image: url("https://sc-25.cdn.cbj-x.com/red-button.webp");
+        width: 140px;
+        height: 63.16px;
+        z-index: 5;
+
+        animation: intrude 5s linear forwards;
+    }
+
+    .back {
+        border: 20px solid var(--game-bg-color);
+        border-image: url("https://sc-25.cdn.cbj-x.com/metal_border.webp") 25% fill;
+        margin-top: -63.16px;
+        border-radius: 5px;
+        z-index: 10;
+        width: 100px;
+        height: 22.42px;
+    }
+}

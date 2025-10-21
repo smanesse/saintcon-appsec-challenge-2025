@@ -1,0 +1,37 @@
+services:
+  diceroller:
+    build: .
+    image: diceroller
+    ports:
+      - "127.0.0.1:6005:6005"
+    volumes:
+      - shared_results:/shared
+    environment:
+      - TEST_MODE=${TEST_MODE:-}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6005/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  tests:
+    profiles: ["testing"]
+    build:
+      context: ${TESTS_CONTEXT:-../tests}
+      dockerfile: Dockerfile
+    depends_on:
+      diceroller:
+        condition: service_healthy
+    volumes:
+      - ${TESTS_DIR:-./tests}:/usr/src/app
+      - shared_results:/shared
+    environment:
+      - BASE_URL=http://diceroller:6005
+      - SHARED_DIR=/shared
+    networks:
+      - default
+
+volumes:
+  shared_results:
+    driver: local

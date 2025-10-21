@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light Cycle Racer - SAINTCON Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0a0a1a;
+            color: #00f0f0;
+            text-shadow: 0 0 5px #00f0f0, 0 0 10px #00f0f0;
+        }
+        .glow-box {
+            box-shadow: 0 0 10px #00f0f0, 0 0 20px #00f0f0, 0 0 30px #00f0f0 inset;
+            border: 2px solid #00f0f0;
+        }
+        .btn-glow {
+            background-color: #0d1a3a;
+            border: 2px solid #00f0f0;
+            box-shadow: 0 0 5px #00f0f0, 0 0 10px #00f0f0, 0 0 5px #00f0f0 inset;
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            background-color: #00f0f0;
+            color: #0a0a1a;
+            text-shadow: none;
+            box-shadow: 0 0 10px #00f0f0, 0 0 20px #00f0f0, 0 0 30px #ffffff;
+        }
+        canvas {
+            background-color: #000;
+            box-shadow: 0 0 15px #00f0f0, 0 0 25px #00f0f0 inset;
+            border: 1px solid #00f0f0;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-6xl text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4">Light Cycle Racer</h1>
+        <p class="mb-4 text-cyan-200 text-shadow-none">Survive as long as you can. Use Arrow Keys to move.</p>
+    </div>
+
+    <div class="flex flex-col gap-8 w-full max-w-4xl items-center">
+        <!-- Game Area -->
+        <div class="w-full max-w-2xl">
+            <div id="game-container" class="relative w-full aspect-square glow-box rounded-lg p-2">
+                <canvas id="gameCanvas" class="w-full h-full rounded-md"></canvas>
+                <div id="startScreen" class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
+                    <h2 class="text-3xl font-bold mb-4">Ready to Race?</h2>
+                    <button id="startButton" class="btn-glow text-xl px-8 py-4 rounded-lg">Start Game</button>
+                </div>
+                <div id="gameOverScreen" class="absolute inset-0 flex-col items-center justify-center bg-black bg-opacity-70 text-center hidden">
+                    <h2 class="text-4xl font-bold text-red-500" style="text-shadow: 0 0 5px #f00, 0 0 10px #f00;">SYSTEM FAILURE</h2>
+                    <p class="text-xl mt-2 mb-4">Final Score: <span id="finalScore">0</span></p>
+                    <p id="challengePoints" class="mb-2 text-lg text-green-400">Challenge Points: <span id="challengePointsValue">0</span>%</p>
+                    <p id="statusMessage" class="mb-4 text-lg"></p>
+                    <button id="restartButton" class="btn-glow text-lg px-6 py-3 rounded-lg">Restart</button>
+                </div>
+            </div>
+            <div class="mt-4 flex justify-between items-center bg-gray-900 glow-box rounded-lg p-4">
+                <div class="text-lg">Score: <span id="score">0</span></div>
+                <div class="text-lg">High Score: <span id="highScore">500</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const highScoreEl = document.getElementById('highScore');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const startButton = document.getElementById('startButton');
+        const restartButton = document.getElementById('restartButton');
+        const finalScoreEl = document.getElementById('finalScore');
+        const challengePointsEl = document.getElementById('challengePointsValue');
+        const statusMessageEl = document.getElementById('statusMessage');
+
+        const gridSize = 40;
+        let tileCount;
+        let player, velocity, trail, score, highScore, gameLoopInterval;
+        let isGameOver = true;
+        let sessionId = null;
+
+        function setupCanvas() {
+            const container = document.getElementById('game-container');
+            const size = container.clientWidth;
+            canvas.width = size;
+            canvas.height = size;
+            tileCount = canvas.width / (size / gridSize);
+        }
+
+        async function initializeGame() {
+            // Start a new game session on the server
+            try {
+                const response = await fetch('/api/start_game', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                const data = await response.json();
+                sessionId = data.session_id;
+                console.log('Game session started:', sessionId);
+            } catch (error) {
+                console.error('Failed to start game session:', error);
+                return;
+            }
+
+            player = { x: Math.floor(gridSize / 2), y: Math.floor(gridSize / 2) };
+            velocity = { x: 0, y: 0 };
+            trail = [];
+            score = 0;
+            isGameOver = false;
+            scoreEl.textContent = 0;
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            gameLoopInterval = setInterval(gameLoop, 50);
+        }
+
+        function resetGame() {
+            clearInterval(gameLoopInterval);
+            initializeGame();
+        }
+
+        function gameLoop() {
+            if (isGameOver) return;
+
+            // Only move if player has started moving (velocity is not 0,0)
+            if (velocity.x !== 0 || velocity.y !== 0) {
+                player.x += velocity.x;
+                player.y += velocity.y;
+
+                // Check for wall collision
+                if (player.x < 0 || player.x >= gridSize || player.y < 0 || player.y >= gridSize) {
+                    gameOver();
+                    return;
+                }
+
+                // Check for self-collision
+                for (let i = 0; i < trail.length; i++) {
+                    if (trail[i].x === player.x && trail[i].y === player.y) {
+                        gameOver();
+                        return;
+                    }
+                }
+
+                trail.push({ x: player.x, y: player.y });
+
+                // Send move to server
+                if (sessionId) {
+                    sendMove(player.x, player.y);
+                }
+
+                score += 10;
+                scoreEl.textContent = score;
+            }
+
+            draw();
+        }
+
+        async function sendMove(x, y) {
+            try {
+                await fetch('/api/move', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        position: { x: x, y: y }
+                    })
+                });
+            } catch (error) {
+                console.error('Failed to send move:', error);
+            }
+        }
+
+        function draw() {
+            const tileSize = canvas.width / gridSize;
+            ctx.fillStyle = '#000510';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Player trail
+            ctx.fillStyle = '#00f0f0';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "#00f0f0";
+            for (let i = 0; i < trail.length; i++) {
+                ctx.fillRect(trail[i].x * tileSize, trail[i].y * tileSize, tileSize -1, tileSize -1);
+            }
+            
+            // Player head
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = "#ffffff";
+            ctx.fillRect(player.x * tileSize, player.y * tileSize, tileSize - 1, tileSize -1);
+        }
+        
+        async function gameOver() {
+            isGameOver = true;
+            clearInterval(gameLoopInterval);
+            finalScoreEl.textContent = score;
+            gameOverScreen.classList.remove('hidden');
+
+            const payload = {
+                session_id: sessionId,
+                final_position: { x: player.x, y: player.y },
+                score: score,
+            };
+
+            await submitScore(payload);
+        }
+
+        async function submitScore(payload) {
+            statusMessageEl.textContent = 'Submitting score to server...';
+            
+            try {
+                const response = await fetch('/api/submit_score', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusMessageEl.textContent = data.message;
+                    challengePointsEl.textContent = data.challenge_points;
+                    
+                    // Log server response details to console
+                    console.log('Server response:', data);
+                    
+                    if (data.new_high_score) {
+                        highScore = data.high_score;
+                        highScoreEl.textContent = highScore;
+                        statusMessageEl.textContent += ' - NEW HIGH SCORE!';
+                        console.log('New high score achieved:', highScore);
+                    }
+                    
+                    // Challenge completion feedback
+                    if (data.challenge_points >= 75) {
+                        statusMessageEl.textContent = 'Excellent performance!';
+                        statusMessageEl.className += ' text-green-400 font-bold';
+                        console.log('High challenge points achieved:', data.challenge_points);
+                        
+                        // Fetch success endpoint for flag
+                        try {
+                            const successResponse = await fetch('/api/success');
+                            const successData = await successResponse.json();
+                            console.log('Success endpoint response:', successData);
+                        } catch (e) {
+                            console.log('Success endpoint error:', e);
+                        }
+                    }
+                } else {
+                    statusMessageEl.textContent = `Server error: ${data.error || 'Unknown error'}`;
+                    statusMessageEl.className += ' text-red-400';
+                    console.log('Server error response:', data);
+                }
+            } catch (error) {
+                statusMessageEl.textContent = 'Connection error';
+                statusMessageEl.className += ' text-red-400';
+            }
+        }
+
+        function handleKeyDown(e) {
+            if (isGameOver) return;
+            switch (e.key) {
+                case 'ArrowUp':
+                    if (velocity.y === 0) { velocity.x = 0; velocity.y = -1; }
+                    break;
+                case 'ArrowDown':
+                    if (velocity.y === 0) { velocity.x = 0; velocity.y = 1; }
+                    break;
+                case 'ArrowLeft':
+                    if (velocity.x === 0) { velocity.x = -1; velocity.y = 0; }
+                    break;
+                case 'ArrowRight':
+                    if (velocity.x === 0) { velocity.x = 1; velocity.y = 0; }
+                    break;
+            }
+        }
+
+        // Load initial high score
+        async function loadLeaderboard() {
+            try {
+                const response = await fetch('/api/leaderboard');
+                const data = await response.json();
+                highScore = data.high_score;
+                highScoreEl.textContent = highScore;
+            } catch (error) {
+                console.log('Failed to load leaderboard:', error);
+            }
+        }
+
+        let lastLogCount = 0; // Track how many logs we've already shown
+
+        // Fetch and display server logs in console
+        async function fetchServerLogs() {
+            try {
+                const response = await fetch('/api/logs');
+                const data = await response.json();
+                if (data.logs && data.logs.length > lastLogCount) {
+                    // Only show new logs since last check
+                    const newLogs = data.logs.slice(lastLogCount);
+                    newLogs.forEach(log => {
+                        console.log('[SERVER]', log);
+                    });
+                    lastLogCount = data.logs.length;
+                }
+            } catch (error) {
+                // Silent error handling for logs
+            }
+        }
+
+        // Poll server logs every few seconds
+        function startLogPolling() {
+            fetchServerLogs(); // Get initial logs
+            setInterval(fetchServerLogs, 2000); // Poll every 2 seconds
+        }
+
+        window.addEventListener('keydown', handleKeyDown);
+        startButton.addEventListener('click', initializeGame);
+        restartButton.addEventListener('click', resetGame);
+        window.addEventListener('resize', setupCanvas);
+
+        // Initial setup
+        setupCanvas();
+        loadLeaderboard();
+        startLogPolling();
+        
+    </script>
+</body>
+</html>

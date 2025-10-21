@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryptle</title>
+    <style>
+        @font-face {
+            font-family: "saintcarnsolas";
+            src: url("https://sc-25.cdn.cbj-x.com/saintcarnsolas.woff") format("woff"),
+            url("https://sc-25.cdn.cbj-x.com/saintcarnsolas.woff2") format("woff2");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "a dripping marker";
+            src: url("https://sc-25.cdn.cbj-x.com/adrip1.woff") format("woff"),
+            url("https://sc-25.cdn.cbj-x.com/adrip1.woff2") format("woff2");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "SDDystopian";
+            src: url("https://sc-25.cdn.cbj-x.com/SDDystopian.woff") format("woff"),
+            url("https://sc-25.cdn.cbj-x.com/SDDystopian.woff2") format("woff2");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html, body {
+            --game-bg-color: #171717;
+            --sc-orange: #e05a00;
+            --sc-red: #693126;
+            --blue: #005ae0;
+            --red: #e02200;
+            --yellow: #fcf300;
+            --off-white: #ffe4e4;
+            --terminal-green: #00601e;
+            --correct: rgb(83, 141, 78);
+            --present: rgb(181, 159, 59);
+            --absent: rgb(58, 58, 60);
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            transition: transform 0.5s;
+
+        }
+
+        .carnival {
+            background-image: url("https://sc-25.cdn.cbj-x.com/backdrop.webp");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+
+            /* Unreasonable styling requests */
+            @media only screen and (max-width: 450px) {
+                * {
+                    scale: 90%;
+                }
+            }
+            @media only screen and (max-width: 350px) {
+                * {
+                    scale: 80%;
+                }
+            }
+            @media only screen and (max-width: 250px) {
+                * {
+                    scale: 70%;
+                }
+            }
+        }
+
+        main {
+            margin: 50px;
+            padding: 1.2rem;
+            background-image: url("https://sc-25.cdn.cbj-x.com/rust-backdrop.webp");
+            background-repeat: no-repeat;
+            background-position: center center;
+            border-radius: 15px;
+            box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+        }
+
+        header {
+            background-image: url("https://sc-25.cdn.cbj-x.com/sign-black.webp");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: contain;
+            margin-bottom: -7rem;
+            z-index: 10;
+            padding: 2rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            rotate: 5deg;
+
+            h1 {
+                font-size: 3em;
+                font-family: "SDDystopian", monospace;
+                color: var(--sc-orange);
+            }
+
+            p {
+                position: absolute;
+                font-family: "a dripping marker", Arial, sans-serif;
+                font-size: 3em;
+                color: var(--off-white);
+                letter-spacing: 5px;
+                rotate: -5deg;
+                margin: 1px;
+                right: 50%;
+                translate: 50%;
+                bottom: 0;
+            }
+        }
+
+        .game {
+            border: 20px solid var(--game-bg-color);
+            border-image: url("https://sc-25.cdn.cbj-x.com/nuts-n-lights-border.webp") 31% fill / 20px / 15px space;
+            background-color: var(--game-bg-color);
+            padding: 4rem 1rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+
+            * {
+                font-family: "saintcarnsolas", monospace;
+            }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tile {
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--sc-orange);
+            font-size: 2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(18, 18, 19);
+            color: var(--off-white);
+            border-radius: 3px;
+            z-index: 3;
+        }
+
+        .correct {
+            background-color: var(--correct);
+        }
+
+        .present {
+            background-color: var(--present);
+        }
+
+        .absent {
+            background-color: var(--absent);
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #answer {
+            font-size: 1em;
+            color: var(--off-white);
+            width: 400px;
+            padding: .7rem;
+            background-color: black;
+            border-radius: 0 0 10px 10px;
+            border: 1px solid var(--sc-orange);
+            opacity: 90%;
+            height: 30px;
+            transition: height 700ms ease-out,
+            padding-top 700ms ease-out,
+            padding-bottom 700ms ease-out,
+            margin 700ms ease-out;
+            margin: 0 0 15px 0;
+            z-index: 2;
+
+            &.hidden {
+                margin: 0 0 45px 0;
+                display: inherit;
+                height: 0;
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+        }
+
+        .glitch-input-wrapper {
+            --bg-color: #0d0d0d;
+            --primary-color: #b94a00;
+            --secondary-color: #e05a00;
+            --glitch-anim-duration: 0.4s;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            padding: 1rem;
+            margin-top: 0;
+        }
+
+        /* --- Container  --- */
+        .input-container {
+            position: relative;
+            width: 19rem;
+        }
+
+        /* --- Input --- */
+        .holo-input {
+            width: 90%;
+            height: 3.5rem;
+            background: rgba(13, 13, 13, 0.7);
+            border: none;
+            border-bottom: 2px solid #333;
+            outline: none;
+            padding: 0 1rem;
+            color: var(--off-white);
+            font-family: inherit;
+            font-size: 1.7rem;
+            caret-color: var(--primary-color);
+            z-index: 10;
+            transition: background 0.3s ease,
+            border-color 0.3s ease;
+            letter-spacing: 15px;
+            text-align: center;
+            text-indent: 7.5px;
+        }
+
+        /* --- Floating Label --- */
+        .input-label {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: var(--off-white);
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 11;
+        }
+
+        .holo-input:focus + .input-label,
+        .holo-input:not(:placeholder-shown) + .input-label {
+            top: -1.5rem;
+            left: 0;
+            font-size: 0.8rem;
+            opacity: 1;
+            color: var(--primary-color);
+        }
+
+        .holo-input:focus + .input-label::before,
+        .holo-input:focus + .input-label::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #212121;
+        }
+
+        .holo-input:focus + .input-label::before {
+            color: var(--secondary-color);
+            animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        .holo-input:focus + .input-label::after {
+            color: var(--off-white);
+            animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+        }
+
+        /* --- Decorative Layers --- */
+        .input-border,
+        .input-scanline,
+        .input-glow,
+        .input-corners {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .input-border {
+            border: 1px solid rgba(234, 242, 0, 0.2);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .corner {
+            position: absolute;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid var(--primary-color);
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+
+        .corner-tl {
+            top: -0.3rem;
+            left: -0.3rem;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-tr {
+            top: -0.3rem;
+            right: -0.3rem;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-bl {
+            bottom: -0.3rem;
+            left: -0.3rem;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-br {
+            bottom: -0.3rem;
+            right: -0.3rem;
+            border-left: none;
+            border-top: none;
+        }
+
+        .input-glow {
+            background: radial-gradient(
+                    ellipse at center,
+                    rgba(234, 242, 0, 0.2) 0%,
+                    transparent 70%
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .input-scanline {
+            height: 100%;
+            background: linear-gradient(
+                    to bottom,
+                    transparent 0%,
+                    rgba(234, 242, 0, 0.1) 48%,
+                    rgba(234, 242, 0, 0.3) 50%,
+                    rgba(234, 242, 0, 0.1) 52%,
+                    transparent 100%
+            );
+            opacity: 0;
+        }
+
+        /* --- Data Visualization --- */
+        .input-data-stream {
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 0.3rem;
+            display: flex;
+            opacity: 0;
+            transition: opacity 0.3s ease 0.1s;
+        }
+
+        .stream-bar {
+            flex-grow: 1;
+            background-color: var(--primary-color);
+            transition: transform 0.2s,
+            opacity 0.2s;
+            transform: scaleY(0);
+            transform-origin: bottom;
+        }
+
+        .holo-input:focus {
+            border-color: transparent;
+        }
+
+        .holo-input:focus ~ .input-border {
+            opacity: 1;
+            border-color: rgba(234, 242, 0, 0.5);
+        }
+
+        .holo-input:focus ~ .input-corners .corner {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-width: 3px;
+            opacity: 1;
+        }
+
+        .holo-input:focus ~ .input-glow {
+            opacity: 1;
+        }
+
+        .holo-input:focus ~ .input-scanline {
+            animation: scan-vertical 4s linear infinite;
+        }
+
+        .holo-input:focus ~ .input-data-stream {
+            opacity: 1;
+        }
+
+        .holo-input:focus ~ .input-data-stream .stream-bar {
+            animation: data-pulse 2s infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        /* --- Keyframes --- */
+        @keyframes glitch-label {
+            0% {
+                transform: translate(0);
+                clip-path: inset(0 0 0 0);
+            }
+            20% {
+                transform: translate(-0.2rem, 0.1rem);
+                clip-path: inset(50% 0 20% 0);
+            }
+            40% {
+                transform: translate(0.1rem, -0.1rem);
+                clip-path: inset(20% 0 60% 0);
+            }
+            60% {
+                transform: translate(-0.15rem, 0.1rem);
+                clip-path: inset(80% 0 5% 0);
+            }
+            80% {
+                transform: translate(0.15rem, -0.15rem);
+                clip-path: inset(30% 0 45% 0);
+            }
+            100% {
+                transform: translate(0);
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        @keyframes scan-vertical {
+            0% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            25% {
+                opacity: 0.5;
+            }
+            75% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+        }
+
+        @keyframes data-pulse {
+            0%,
+            100% {
+                transform: scaleY(0.2);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scaleY(1);
+                opacity: 0.8;
+            }
+        }
+
+        .three-dee-button {
+            background: #fff;
+            border: 2px solid #888;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 10px;
+            outline: none;
+            margin-top: .5rem;
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15), 5px 14px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.1s ease-in-out;
+
+            &#submit {
+                background: var(--sc-orange);
+                border: 2px solid var(--sc-red);
+
+                .three-dee-button__content {
+                    box-shadow: inset 0 -6px var(--sc-red), 0 -2px var(--sc-orange);
+                }
+            }
+
+            &#try-again {
+                background: var(--sc-red);
+                border: 2px solid var(--sc-red);
+
+                .three-dee-button__content {
+                    box-shadow: inset 0 -6px #551d12, 0 -2px #551d12;
+                }
+            }
+        }
+
+        .three-dee-button__content {
+            display: block;
+            padding: 12px 40px;
+            border-radius: 8px;
+            transition: all 0.1s ease-in-out;
+        }
+
+        .three-dee-button__text {
+            color: var(--off-white);
+            display: block;
+            transform: translate3d(0, -4px, 0);
+            transition: all 0.1s ease-in-out;
+            font-size: 1.2em;
+        }
+
+        .three-dee-button:active {
+            box-shadow: none;
+        }
+
+        .three-dee-button:active .three-dee-button__content {
+            box-shadow: none;
+        }
+
+        .three-dee-button:active .three-dee-button__text {
+            transform: translate3d(0, 0, 0);
+        }
+
+        #legend {
+            padding: 12px;
+            border: 1px solid var(--sc-orange);
+            border-radius: 4px;
+            width: 415px;
+            margin-top: -5px;
+            font-size: 1.6em;
+
+            ul {
+                list-style: none;
+                display: flex;
+                width: 100%;
+                justify-content: space-around;
+                margin: 0;
+                padding: 0;
+
+                li {
+                    margin: 0 5px;
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+
+                    span {
+                        &.correct {
+                            background-color: var(--correct);
+                        }
+                        &.present{
+                            background-color: var(--present);
+                        }
+                        &.absent {
+                            background-color: var(--absent);
+                        }
+                        &:not(:first-child) {
+                            color: var(--off-white);
+                            z-index: 1;
+                            margin-left: 4px;
+                        }
+
+                        &:first-child {
+                            bottom: -2px;
+                            left: 0;
+                            margin-right: 4px;
+                            display: block;
+                            position: absolute;
+                            width: 50px;
+                            height: 10px;
+                            z-index: 0;
+                            border-radius: 4px 0 0 4px;
+                        }
+                    }
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="carnival">
+    <header>
+        <h1>encryptle</h1>
+        <p>ECB</p>
+    </header>
+    <main>
+        <div class="game">
+            <div class="grid" id="grid"></div>
+            <aside id="legend">
+                <ul>
+                    <li><span class="correct"></span><span>Correct</span></li>
+                    <li><span class="present"></span><span>Present</span></li>
+                    <li><span class="absent"></span><span>Absent</span></li>
+                </ul>
+            </aside>
+            <h2 class="hidden" id="answer"></h2>
+            <div class="controls">
+                <div class="glitch-input-wrapper">
+                    <div class="input-container">
+                        <input
+                                class="holo-input"
+                                id="guess"
+                                maxlength="6"
+                                oninput="this.value = this.value.toUpperCase()"
+                                placeholder=""
+                                required=""
+                                type="text"
+                        />
+                        <label class="input-label" data-text="Enter your guess" for="guess">
+                            Enter your guess
+                        </label>
+
+                        <div class="input-border"></div>
+                        <div class="input-scanline"></div>
+                        <div class="input-glow"></div>
+
+                        <div class="input-data-stream">
+                            <div class="stream-bar" style="--i: 0;"></div>
+                            <div class="stream-bar" style="--i: 1;"></div>
+                            <div class="stream-bar" style="--i: 2;"></div>
+                            <div class="stream-bar" style="--i: 3;"></div>
+                            <div class="stream-bar" style="--i: 4;"></div>
+                            <div class="stream-bar" style="--i: 5;"></div>
+                            <div class="stream-bar" style="--i: 6;"></div>
+                            <div class="stream-bar" style="--i: 7;"></div>
+                            <div class="stream-bar" style="--i: 8;"></div>
+                            <div class="stream-bar" style="--i: 9;"></div>
+                        </div>
+
+                        <div class="input-corners">
+                            <div class="corner corner-tl"></div>
+                            <div class="corner corner-tr"></div>
+                            <div class="corner corner-bl"></div>
+                            <div class="corner corner-br"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="three-dee-button" id="submit" onclick="submitGuess()" role="button">
+                    <span class="three-dee-button__content">
+                        <span class="three-dee-button__text text">
+                            Submit
+                        </span>
+                    </span>
+                </button>
+            </div>
+            <div>
+                <button class="hidden three-dee-button" id="try-again" onclick="location.reload()" role="button">
+                    <span class="three-dee-button__content">
+                        <span class="three-dee-button__text text">
+                            Try Again
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    WORD_LENGTH = 6;
+    const input = document.getElementById("guess");
+
+    input.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            submitGuess();
+        }
+    });
+
+    function createGrid(size) {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+        grid.style.gridTemplateColumns = `repeat(${size}, 80px)`;
+        for (let i = 0; i < size; i++) {
+            const tile = document.createElement('div');
+            tile.classList.add('tile');
+            tile.setAttribute('id', `tile-${i}`);
+            grid.appendChild(tile);
+        }
+    }
+
+    createGrid(WORD_LENGTH);
+
+    function submitGuess() {
+        const wordLength = WORD_LENGTH;
+        const guessInput = document.getElementById('guess');
+        const guess = guessInput.value.toLowerCase();
+        if (guess.length != wordLength) {
+            alert(`Your guess must be exactly ${wordLength} letters long.`);
+            return;
+        }
+
+        fetch(`/check`, {
+                method: "POST",
+                body: JSON.stringify({
+                    "guess": guess
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(async response => {
+                if (response.ok) {
+                    let data = await response.json();
+                    let answer = data.answer;
+                    for (let i = 0; i < wordLength; i++) {
+                        const tile = document.getElementById(`tile-${i}`);
+                        tile.textContent = guess[i];
+                        if (guess[i] === answer[i]) {
+                            tile.classList.add('correct');
+                        } else if (answer.includes(guess[i])) {
+                            tile.classList.add('present');
+                        } else {
+                            tile.classList.add('absent');
+                        }
+                    }
+                    guessInput.disabled = true;
+                    setTimeout(() => {
+                        document.getElementById("answer").innerText = data.message;
+                    }, 650)
+                    document.getElementById("answer").classList.remove("hidden");
+                    if (data.tries >= 5) {
+                        document.getElementById("try-again").classList.add("hidden");
+                        document.getElementById("submit").classList.add("hidden");
+                    } else {
+                        document.getElementById("try-again").classList.remove("hidden");
+                        document.getElementById("submit").classList.add("hidden");
+                    }
+                } else {
+                    let err = await response.text();
+                    alert(err);
+                }
+            });
+    }
+</script>
+</body>
+</html>
+

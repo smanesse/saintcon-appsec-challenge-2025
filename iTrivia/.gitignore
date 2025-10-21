@@ -1,0 +1,32 @@
+# Database files
+itrivia.db
+*.db
+
+# Build artifacts
+/target/
+/public/
+itrivia-app/target/
+itrivia-app/dx/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

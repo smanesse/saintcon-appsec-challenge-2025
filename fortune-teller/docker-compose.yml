@@ -1,0 +1,38 @@
+services:
+  fortune-teller:
+    build: .
+    container_name: fortune-teller
+    ports:
+      - "127.0.0.1:6010:6010"
+    volumes:
+      - shared_results:/shared
+    restart: unless-stopped
+    environment:
+      - DEBUG=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6010/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  tests:
+    profiles: ["testing"]
+    build:
+      context: ${TESTS_CONTEXT:-../tests}
+      dockerfile: Dockerfile
+    depends_on:
+      fortune-teller:
+        condition: service_healthy
+    volumes:
+      - ${TESTS_DIR:-./tests}:/usr/src/app
+      - shared_results:/shared
+    environment:
+      - BASE_URL=http://fortune-teller:6010
+      - SHARED_DIR=/shared
+    networks:
+      - default
+
+volumes:
+  shared_results:
+    driver: local

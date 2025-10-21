@@ -1,0 +1,31 @@
+# SBT / Scala
+target/
+*.class
+*.log
+*.jar
+*.war
+*.ear
+.bsp/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Application specific
+scores.txt
+oracle_score.txt
+
+# Docker
+.dockerignore
+
+# Play Framework
+logs/
+RUNNING_PID
+.sbtserver

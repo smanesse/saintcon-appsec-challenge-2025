@@ -1,0 +1,154 @@
+@(
+        guessForm: Form[Int],
+        gameState: GameState,
+        message: Option[String]
+)(
+        implicit request: RequestHeader,
+        messages: MessagesProvider
+)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Number Guessing Game</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+    <script>
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            // Format all numbers in guess-list spans
+            document.querySelectorAll('.guess-list').forEach(function(el) {
+                var num = parseInt(el.textContent.trim());
+                if (!isNaN(num)) {
+                    el.textContent = formatNumber(num);
+                }
+            });
+
+            // Format numbers in messages
+            document.querySelectorAll('.message').forEach(function(el) {
+                el.innerHTML = el.innerHTML.replace(/\b(\d{4,})\b/g, function(match) {
+                    return formatNumber(parseInt(match));
+                });
+            });
+        });
+
+        function numbersOnly(element) {
+            let newValue = ""
+            let i = 0;
+            let maxlength = 10;
+            if (element.value[i] === '-') {
+                newValue = "-"
+                i = 1;
+                maxlength = 11;
+            }
+            for (; i < Math.min(element.value.length, maxlength); i++) {
+                if (!isNaN(parseInt(element.value[i]))) {
+                    newValue += parseInt(element.value[i]);
+                }
+            }
+            if (parseInt(newValue) > @(Int.MaxValue)) {
+                newValue = @(Int.MaxValue);
+            }
+            if (parseInt(newValue) < @(Int.MinValue)) {
+                newValue = @(Int.MinValue);
+            }
+            element.value = newValue;
+        }
+    </script>
+</head>
+<body>
+    <div class="carnival">
+        <header>
+            <h1>oracle</h1>
+            <p>numbies!</p>
+        </header>
+        <main>
+            <div class="game">
+                <div class="infobox">
+                    <br/>
+                    <p>root@@saintcon %&gt; sudo /ask_oracle.sh</p>
+                    <p>password:</p>
+                    <br/>
+                    <p class="ask"><span>&gt;</span> Hello there</p>
+                    <p class="ask"><span>&gt;</span> I'm thinking of a 32-bit integer</p>
+                    <p class="ask"><span>&gt;</span> You have 2 attempts to guess it</p>
+                    <p class="ask"><span>&gt;</span></p>
+                    @if(gameState.guesses.nonEmpty) {
+                        <p class="ask"><span>&gt;</span> Guesses:</p>
+                        @for(guess <- gameState.guesses.reverse) {
+                            <p class="ask">
+                                <span>&gt;</span>
+                                [ <span>@("0".repeat(12 - guess.toString.length))</span>@guess<span>0</span> ]
+                            </p>
+                        }
+                    }
+
+                    @message.map { msg =>
+                        <div class="message @(
+                            if(msg.contains("Congratulations")) {"success"}
+                            else if(msg.contains("Game over")) {"error"}
+                            else {"info"})"> @msg </div>
+                    }
+                    <br/>
+                </div>
+
+
+                @if(gameState.attempts < 2 && !message.exists(_.contains("Congratulations"))) {
+                    @helper.form(action = routes.GameController.guess()) {
+                        <div class="glitch-input-wrapper">
+                            <div class="input-container">
+                                <input
+                                class="holo-input"
+                                maxlength="11"
+                                id="guess"
+                                name="guess"
+                                oninput="numbersOnly(this)"
+                                required="required"
+                                type="text"
+                                />
+                                <label class="hidden" for="guess">Guess</label>
+
+                                <div class="input-border"></div>
+                                <div class="input-scanline"></div>
+                                <div class="input-glow"></div>
+
+                                <div class="input-data-stream">
+                                    <div class="stream-bar" style="--i: 0;"></div>
+                                    <div class="stream-bar" style="--i: 1;"></div>
+                                    <div class="stream-bar" style="--i: 2;"></div>
+                                    <div class="stream-bar" style="--i: 3;"></div>
+                                    <div class="stream-bar" style="--i: 4;"></div>
+                                    <div class="stream-bar" style="--i: 5;"></div>
+                                    <div class="stream-bar" style="--i: 6;"></div>
+                                    <div class="stream-bar" style="--i: 7;"></div>
+                                    <div class="stream-bar" style="--i: 8;"></div>
+                                    <div class="stream-bar" style="--i: 9;"></div>
+                                </div>
+
+                                <div class="input-corners">
+                                    <div class="corner corner-tl"></div>
+                                    <div class="corner corner-tr"></div>
+                                    <div class="corner corner-bl"></div>
+                                    <div class="corner corner-br"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="three-dee-button" id="submit" type="submit" role="button">
+                            <span class="three-dee-button__content">
+                                <span class="three-dee-button__text text">
+                                    Submit Guess
+                                </span>
+                            </span>
+                        </button>
+                    }
+                }
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

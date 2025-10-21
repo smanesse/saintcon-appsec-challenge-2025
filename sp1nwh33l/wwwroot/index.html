@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Spin</title>
+    <style>
+        @font-face {
+            font-family: "saintcarnsolas";
+            src: url("https://sc-25.cdn.cbj-x.com/saintcarnsolas.woff") format("woff"),
+                url("https://sc-25.cdn.cbj-x.com/saintcarnsolas.woff2") format("woff2");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "a dripping marker";
+            src: url("https://sc-25.cdn.cbj-x.com/adrip1.woff") format("woff"),
+                url("https://sc-25.cdn.cbj-x.com/adrip1.woff2") format("woff2");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "SDDystopian";
+            src: url("https://sc-25.cdn.cbj-x.com/SDDystopian.woff") format("woff"),
+                url("https://sc-25.cdn.cbj-x.com/SDDystopian.woff2") format("woff2");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html,
+        body {
+            --bg: #0f172a;
+            --text: #e2e8f0;
+            --subtle: #e2e8f0;
+            --accent: #38bdf8;
+            --button-bg: #38bdf8;
+            --button-text: #0b1220;
+            --panel: #111827;
+            --wheel-edge: darkgoldenrod;
+            --wheel-small-1: #164383;
+            --wheel-small-2: #693126;
+            --wheel-small-3: #00601e;
+            --wheel-ten: #e05a00;
+            --wheel-jackpot: black;
+
+            --game-bg-color: #171717;
+            --sc-orange: #e05a00;
+            --sc-red: #693126;
+            --blue: #005ae0;
+            --red: #e02200;
+            --yellow: #fcf300;
+            --off-white: #e4ffe4;
+            --terminal-green: #00601e;
+            --correct: rgb(83, 141, 78);
+            --present: rgb(181, 159, 59);
+            --absent: rgb(58, 58, 60);
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            transition: transform 0.5s;
+
+        }
+
+        .carnival {
+            background-image: url("https://sc-25.cdn.cbj-x.com/backdrop.webp");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+
+            /* Unreasonable styling requests */
+            @media only screen and (max-width: 450px) {
+                * {
+                    scale: 90%;
+                }
+            }
+
+            @media only screen and (max-width: 350px) {
+                * {
+                    scale: 80%;
+                }
+            }
+
+            @media only screen and (max-width: 250px) {
+                * {
+                    scale: 70%;
+                }
+            }
+        }
+
+        main {
+            margin: 50px;
+            padding: 1.2rem;
+            background-image: url("https://sc-25.cdn.cbj-x.com/rust-backdrop.webp");
+            background-repeat: no-repeat;
+            background-position: center center;
+            border-radius: 15px;
+            box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 500px;
+        }
+
+        header {
+            background-image: url("https://sc-25.cdn.cbj-x.com/sign-black.webp");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: contain;
+            margin-bottom: -7rem;
+            z-index: 10;
+            padding: 1.4rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            rotate: 5deg;
+
+            h1 {
+                font-family: "SDDystopian", monospace;
+                color: var(--sc-orange);
+            }
+
+            p {
+                position: absolute;
+                font-family: "a dripping marker", Arial, sans-serif;
+                font-size: 2em;
+                color: var(--off-white);
+                letter-spacing: 5px;
+                rotate: -5deg;
+                margin: 1px;
+                right: 50%;
+                translate: 50%;
+                bottom: 0;
+            }
+        }
+
+        .game {
+            border: 20px solid var(--game-bg-color);
+            border-image: url("https://sc-25.cdn.cbj-x.com/nuts-n-lights-border.webp") 31% fill / 20px / 15px space;
+            background-color: var(--game-bg-color);
+            padding: 4rem 1rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+
+            * {
+                font-family: "saintcarnsolas", monospace;
+            }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 60px);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tile {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--terminal-green);
+            font-size: 2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(18, 18, 19);
+            color: var(--off-white);
+            border-radius: 3px;
+            z-index: 3;
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .three-dee-button {
+            background: #fff;
+            border: 2px solid #888;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 10px;
+            outline: none;
+            margin-top: .5rem;
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15), 5px 14px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.1s ease-in-out;
+
+            &#submit {
+                background: var(--terminal-green);
+                border: 2px solid #003210;
+
+                .three-dee-button__content {
+                    box-shadow: inset 0 -6px #003e1a, 0 -2px var(--terminal-green);
+                }
+            }
+
+            &#try-again {
+                background: var(--sc-red);
+                border: 2px solid var(--sc-red);
+
+                .three-dee-button__content {
+                    box-shadow: inset 0 -6px #551d12, 0 -2px #551d12;
+                }
+            }
+        }
+
+        .three-dee-button__content {
+            display: block;
+            padding: 12px 40px;
+            border-radius: 8px;
+            transition: all 0.1s ease-in-out;
+        }
+
+        .three-dee-button__text {
+            color: var(--off-white);
+            display: block;
+            transform: translate3d(0, -4px, 0);
+            transition: all 0.1s ease-in-out;
+            font-size: 1.2em;
+        }
+
+        .three-dee-button:active {
+            box-shadow: none;
+        }
+
+        .three-dee-button:active .three-dee-button__content {
+            box-shadow: none;
+        }
+
+        .three-dee-button:active .three-dee-button__text {
+            transform: translate3d(0, 0, 0);
+        }
+
+        #legend {
+            padding: 12px 8px 8px 8px;
+            border: 1px solid var(--terminal-green);
+            border-radius: 4px;
+            width: 275px;
+            margin-top: -5px;
+
+            ul {
+                list-style: none;
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+                margin: 0;
+                padding: 0;
+
+                li {
+                    margin: 0 5px;
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+
+                    span {
+                        &.correct {
+                            background-color: var(--correct);
+                        }
+
+                        &.present {
+                            background-color: var(--present);
+                        }
+
+                        &.absent {
+                            background-color: var(--absent);
+                        }
+
+                        &:not(:first-child) {
+                            color: var(--off-white);
+                            z-index: 1;
+                            margin-left: 4px;
+                        }
+
+                        &:first-child {
+                            bottom: -2px;
+                            left: 0;
+                            margin-right: 4px;
+                            display: block;
+                            position: absolute;
+                            width: 50px;
+                            height: 10px;
+                            z-index: 0;
+                            border-radius: 4px 0 0 4px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .meta {
+            font-size: 14px;
+            color: var(--subtle)
+        }
+
+        .wheel-wrap {
+            position: relative;
+            width: min(250px, 50vw);
+            aspect-ratio: 1/1;
+            margin: -10px auto 18px;
+            display: grid;
+            place-items: center;
+            background-image: url("https://sc-25.cdn.cbj-x.com/warning-backdrop.webp");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-origin: border-box;
+            border: 10px solid var(--game-bg-color);
+            border-image: url("https://sc-25.cdn.cbj-x.com/metal_border.webp") 10%;
+            padding: 10px;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg,
+                    var(--wheel-small-1) 0deg 40deg,
+                    var(--wheel-small-2) 40deg 80deg,
+                    var(--wheel-small-3) 80deg 120deg,
+                    var(--wheel-small-1) 120deg 160deg,
+                    var(--wheel-ten) 160deg 178deg,
+                    var(--wheel-jackpot) 178deg 182deg,
+                    var(--wheel-ten) 182deg 200deg,
+                    var(--wheel-small-3) 200deg 240deg,
+                    var(--wheel-small-2) 240deg 280deg,
+                    var(--wheel-small-1) 280deg 320deg,
+                    var(--wheel-small-3) 320deg 360deg);
+            border: 10px solid var(--wheel-edge);
+            box-shadow: inset 0 0 0 12px rgba(0, 0, 0, .12), inset 0 0 80px rgba(0, 0, 0, .3);
+            transform: rotate(0deg);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -10px;
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-bottom: 18px solid var(--accent);
+            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .4));
+            transform: rotate(180deg);
+            z-index: 1000;
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            font-weight: 600;
+            margin: 8px 0 2px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            border: 0;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-weight: 700;
+            background: var(--button-bg);
+            color: var(--button-text);
+            cursor: pointer;
+            transition: transform .06s ease;
+        }
+
+        .btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .btn:active {
+            transform: scale(.98)
+        }
+
+        .msg {
+            margin-top: 10px;
+            text-align: center;
+            color: var(--subtle);
+            min-height: 20px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 16px 0 8px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--subtle);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #meter {
+            height: 25px;
+            width: 100%;
+            background-color: var(--subtle);
+            border-radius: 12px;
+            overflow: hidden;
+
+            #progress {
+                background-color: var(--accent);
+                height: 100%;
+                transition: width 2s ease-in;
+                width: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="carnival">
+        <header>
+            <h1>Sp1nwh33l</h1>
+            <p>spin2win</p>
+        </header>
+        <main>
+            <div class="game">
+                <div class="wheel-wrap">
+                    <div class="pointer"></div>
+                    <div id="wheel" class="wheel"></div>
+                </div>
+
+                <div class="stats">
+                    <div id="points">Points: 0</div>
+                    <div id="spins" class="meta"></div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--wheel-jackpot);"></div>
+                        <span>100 pts</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--wheel-ten);"></div>
+                        <span>10 pts</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--wheel-small-2);"></div>
+                        <span>5 pts</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--wheel-small-1);"></div>
+                        <span>3 pts</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--wheel-small-3);"></div>
+                        <span>1 pts</span>
+                    </div>
+                </div>
+
+                <div id="meter">
+                    <div id="progress"></div>
+                </div>
+
+                <button id="spinBtn" class="btn">Spin</button>
+                <div id="msg" class="msg"></div>
+            </div>
+
+    </div>
+    </main>
+    </div>
+    <div class="app">
+        <script>
+            const wheel = document.getElementById('wheel')
+            const spinBtn = document.getElementById('spinBtn')
+            const pointsEl = document.getElementById('points')
+            const spinsEl = document.getElementById('spins')
+            const msgEl = document.getElementById('msg')
+            const progressEl = document.getElementById('progress')
+
+            let currentRotation = 0
+            let busy = false
+
+            init()
+
+            async function init() {
+                const s = await fetchJSON('/api/state')
+                if (!s) return
+                renderState(s.points, s.spins_used, s.spins_left)
+                spinBtn.onclick = onSpinClick
+                disableIfDone(s.spins_left, s.points)
+            }
+
+            function renderState(points, used, left) {
+                pointsEl.textContent = 'Points: ' + toFixed(points)
+                spinsEl.textContent = left + ' spins left'
+            }
+
+            function disableIfDone(left, points) {
+                if (left <= 0) {
+                    spinBtn.disabled = true
+                    spinBtn.textContent = "You've used all your spins, you got " + toFixed(points) + " points!"
+                }
+            }
+
+            function toFixed(n) {
+                return Number(n).toFixed(2).replace(/\.00$/, '')
+            }
+
+            function setAngle() {
+                let angle = String(window.crypto.getRandomValues(new Uint16Array(1))[0] % 360);
+                localStorage.setItem('targetAngle', angle)
+            }
+
+            async function delay(ms) {
+                await new Promise(resolve => setTimeout(resolve, ms))
+            }
+
+            async function onSpinClick() {
+                if (busy) return
+                busy = true
+                spinBtn.disabled = true
+                msgEl.textContent = 'Charging...'
+
+                setAngle();
+
+                progressEl.style.width = '100%'
+                await delay(2000);
+                progressEl.style.width = '0'
+
+                const angle = +localStorage.getItem('targetAngle');
+
+                const minRotations = 360 * 3;
+                const offset = ((angle - (currentRotation % 360) + 360) % 360)
+                const final = currentRotation + minRotations + offset
+
+                const transitionTimeMs = 5000;
+                wheel.style.transition = `transform ${transitionTimeMs}ms cubic-bezier(.2,.8,.2,1)`
+                wheel.style.transform = 'rotate(' + final + 'deg)'
+                await delay(transitionTimeMs);
+
+                currentRotation = final
+                const result = await fetchJSON('/api/spin', { Angle: angle })
+                if (!result) {
+                    msgEl.textContent = 'Server Failure'
+                    busy = false
+                    return
+                }
+                renderState(result.points, 3 - result.spins_left, result.spins_left)
+                if (result.spins_left <= 0) {
+                    disableIfDone(0, result.points)
+                    msgEl.textContent = ''
+                    return
+                }
+                spinBtn.disabled = false
+                msgEl.textContent = '+' + toFixed(result.prize) + ' points'
+                busy = false
+            }
+
+            async function fetchJSON(url, body) {
+                try {
+                    const opt = body ? {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    } : {
+                        method: 'GET'
+                    }
+                    const r = await fetch(url, opt)
+                    if (!r.ok) return null
+                    return await r.json()
+                } catch (e) {
+                    return null
+                }
+            }
+        </script>
+</body>
+
+</html>

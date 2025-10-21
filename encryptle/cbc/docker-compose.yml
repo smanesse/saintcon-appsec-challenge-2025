@@ -1,0 +1,37 @@
+services:
+  encryptle_cbc:
+    build: .
+    ports:
+      - "127.0.0.1:6002:6002"
+    volumes:
+      - shared_results:/shared
+    environment:
+      - TEST_MODE=${TEST_MODE:-1}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6002/"]
+      interval: 5s
+      timeout: 3s
+      retries: 2
+      start_period: 10s
+
+  tests:
+    profiles: ["testing"]
+    build:
+      context: ${TESTS_CONTEXT:-../../tests}
+      dockerfile: Dockerfile
+    depends_on:
+      encryptle_cbc:
+        condition: service_healthy
+    stop_grace_period: 30s
+    volumes:
+      - ${TESTS_DIR:-./tests}:/usr/src/app
+      - shared_results:/shared
+    environment:
+      - BASE_URL=http://encryptle_cbc:6002
+      - SHARED_DIR=/shared
+    networks:
+      - default
+
+volumes:
+  shared_results:
+    driver: local

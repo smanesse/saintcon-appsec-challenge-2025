@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystic Fortune Teller</title>
+    <!-- TODO: This is not accurate -->
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+    <div class="carnival">
+        <header>
+            <h1>
+                <span>Mystic</span>
+                <span>Fortune Teller</span>
+            </h1>
+            <p>pic pls</p>
+        </header>
+        <main>
+            <div class="game">
+                <aside>
+                    <div>
+                        <p class="form-option">FILE</p>
+                    </div>
+                    <button class="active" onclick="selectMethod('url')"><img width="50"
+                            src="https://sc-25.cdn.cbj-x.com/switch-up.webp"
+                            alt="Switch pointed up at file option"></button>
+                    <button onclick="selectMethod('file')"><img width="50"
+                            src="https://sc-25.cdn.cbj-x.com/switch-down.webp"
+                            alt="Switch pointed down at URL option"></button>
+                    <div>
+                        <p class="form-option">URL</p>
+                    </div>
+                </aside>
+
+                <div class="upload-section">
+                    <div id="fileUpload" class="active">
+                        <div class="file-upload-wrapper">
+                            <label for="photoFile">
+                                <input type="file" id="photoFile" accept="image/*" onchange="handleFileSelect(event)">
+
+                                <div class="glitch-input-wrapper">
+                                    <div class="input-container">
+                                        <div class="holo-input fake">
+                                            <p id="fileLabel"> Choose Your Photo </p>
+                                        </div>
+
+                                        <div class="input-border"></div>
+                                        <div class="input-scanline"></div>
+                                        <div class="input-glow"></div>
+
+                                        <div class="input-data-stream">
+                                            <div class="stream-bar" style="--i: 0;"></div>
+                                            <div class="stream-bar" style="--i: 1;"></div>
+                                            <div class="stream-bar" style="--i: 2;"></div>
+                                            <div class="stream-bar" style="--i: 3;"></div>
+                                            <div class="stream-bar" style="--i: 4;"></div>
+                                            <div class="stream-bar" style="--i: 5;"></div>
+                                            <div class="stream-bar" style="--i: 6;"></div>
+                                            <div class="stream-bar" style="--i: 7;"></div>
+                                            <div class="stream-bar" style="--i: 8;"></div>
+                                            <div class="stream-bar" style="--i: 9;"></div>
+                                        </div>
+
+                                        <div class="input-corners">
+                                            <div class="corner corner-tl"></div>
+                                            <div class="corner corner-tr"></div>
+                                            <div class="corner corner-bl"></div>
+                                            <div class="corner corner-br"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="urlUpload">
+                        <div class="glitch-input-wrapper">
+                            <div class="input-container">
+                                <input class="holo-input url-input" id="photoUrl" required="" type="text" />
+                                <label class="input-label" data-text="URL" for="guess">
+                                    URL
+                                </label>
+
+                                <div class="input-border"></div>
+                                <div class="input-scanline"></div>
+                                <div class="input-glow"></div>
+
+                                <div class="input-data-stream">
+                                    <div class="stream-bar" style="--i: 0;"></div>
+                                    <div class="stream-bar" style="--i: 1;"></div>
+                                    <div class="stream-bar" style="--i: 2;"></div>
+                                    <div class="stream-bar" style="--i: 3;"></div>
+                                    <div class="stream-bar" style="--i: 4;"></div>
+                                    <div class="stream-bar" style="--i: 5;"></div>
+                                    <div class="stream-bar" style="--i: 6;"></div>
+                                    <div class="stream-bar" style="--i: 7;"></div>
+                                    <div class="stream-bar" style="--i: 8;"></div>
+                                    <div class="stream-bar" style="--i: 9;"></div>
+                                </div>
+
+                                <div class="input-corners">
+                                    <div class="corner corner-tl"></div>
+                                    <div class="corner corner-tr"></div>
+                                    <div class="corner corner-bl"></div>
+                                    <div class="corner corner-br"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="three-dee-button" id="submitBtn" onclick="getFortune()" role="button">
+                        <span class="three-dee-button__content">
+                            <span class="three-dee-button__text text">
+                                Read my Fortune
+                            </span>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px;">Analyzing your essence...</p>
+                </div>
+
+                <div class="fortune-result" id="fortuneResult">
+                    <div class="fortune-category" id="fortuneCategory"></div>
+                    <div class="fortune-text" id="fortuneText"><span></span></div>
+                </div>
+
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+        </main>
+    </div>
+</body>
+<footer>
+    <!-- TODO: This is not accurate -->
+    <script src="../static/js/app.js"></script>
+</footer>
+
+</html>

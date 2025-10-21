@@ -1,0 +1,37 @@
+services:
+  oracle:
+    build: .
+    volumes:
+      - shared_results:/shared
+      - ./results:/host_results  # Keep host access for local development
+    environment:
+      - TEST_MODE=${TEST_MODE:-}
+    ports:
+      - "127.0.0.1:6004:6004"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6004/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  tests:
+    profiles: ["testing"]
+    build:
+      context: ${TESTS_CONTEXT:-../tests}
+      dockerfile: Dockerfile
+    depends_on:
+      oracle:
+        condition: service_healthy
+    volumes:
+      - ${TESTS_DIR:-./tests}:/usr/src/app
+      - shared_results:/shared
+    environment:
+      - BASE_URL=http://oracle:6004
+      - SHARED_DIR=/shared
+    networks:
+      - default
+
+volumes:
+  shared_results:
+    driver: local

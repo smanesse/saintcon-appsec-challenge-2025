@@ -1,0 +1,959 @@
+/* Derby Race - Carnival Theme */
+
+@font-face {
+    font-family: "saintcarnsolas";
+    src: url("https://sc-25.cdn.cbj-x.com/saintcarnsolas.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "a dripping marker";
+    src: url("https://sc-25.cdn.cbj-x.com/adrip1.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SDDystopian";
+    src: url("https://sc-25.cdn.cbj-x.com/SDDystopian.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  --game-bg-color: #171717;
+  --sc-orange: #e05a00;
+  --sc-red: #693126;
+  --blue: #005ae0;
+  --red: #e02200;
+  --yellow: #fcf300;
+  --off-white: #e4ffe4;
+  --terminal-green: #00601e;
+  height: 100%;
+  font-family: "saintcarnsolas", monospace;
+}
+
+.app {
+  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  background-image: url("https://sc-25.cdn.cbj-x.com/backdrop.webp");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+/* Account for iframe embedding - reduce overall height when needed */
+@media (max-height: 900px) {
+  .app {
+    min-height: 90vh;
+    height: 90vh;
+  }
+}
+
+.header {
+  background-image: url("https://sc-25.cdn.cbj-x.com/sign-black.webp");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  margin-bottom: -5rem;
+  z-index: 10;
+  padding: 2rem 1.4rem 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  rotate: 3deg;
+  flex-shrink: 0;
+  min-height: 140px;
+}
+
+.header h1 {
+  font-family: "SDDystopian", monospace;
+  color: var(--sc-orange);
+  font-size: 2.5rem;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.header p {
+  font-family: "a dripping marker", Arial, sans-serif;
+  font-size: 1em;
+  color: var(--off-white);
+  letter-spacing: 2px;
+  margin: 0;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* Compact header for smaller screens */
+@media (max-height: 900px) {
+  .header {
+    padding: 1rem;
+    margin-bottom: -3rem;
+    min-height: 90px;
+  }
+  
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .header p {
+    font-size: 1em;
+    bottom: 8px;
+  }
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 1200px;
+  min-height: 0;
+  padding: 2rem 1.5rem;
+  overflow: auto;
+  background-image: url("https://sc-25.cdn.cbj-x.com/rust-backdrop.webp");
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-radius: 15px;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+  margin: 1rem auto;
+}
+
+/* Reduce padding for smaller screens */
+@media (max-height: 900px) {
+  .main {
+    padding: 1rem;
+    margin: 0.5rem auto;
+  }
+}
+
+.setup-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  border: 20px solid var(--game-bg-color);
+  border-image: url("https://sc-25.cdn.cbj-x.com/nuts-n-lights-border.webp") 31% fill / 20px / 15px space;
+  background-color: var(--game-bg-color);
+  border-radius: 5px;
+  margin: auto;
+  width: 100%;
+  padding: 2rem;
+  color: var(--off-white);
+}
+
+.setup-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.setup-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.setup-section h2 {
+  color: var(--off-white);
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  font-family: "saintcarnsolas", monospace;
+}
+
+.input-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.input-group input {
+  flex: 1;
+  min-width: 250px;
+  padding: 1rem;
+  background: rgba(13, 13, 13, 0.7);
+  border: 2px solid var(--terminal-green);
+  border-radius: 5px;
+  font-size: 1.1rem;
+  color: var(--off-white);
+  font-family: "saintcarnsolas", monospace;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--sc-orange);
+  box-shadow: 0 0 10px rgba(224, 90, 0, 0.3);
+  background: rgba(13, 13, 13, 0.9);
+}
+
+.primary-button {
+  background: var(--terminal-green);
+  color: var(--off-white);
+  border: 2px solid #003210;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  min-width: 140px;
+  font-family: "saintcarnsolas", monospace;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15), 5px 14px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.primary-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  box-shadow: inset 0 -6px #003e1a, 0 -2px var(--terminal-green);
+  pointer-events: none;
+}
+
+.primary-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 5px 16px 22px rgba(0, 0, 0, 0.2);
+}
+
+.primary-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: grey;
+  border-color: black;
+}
+
+.secondary-button {
+  background: #6c757d;
+  color: var(--off-white);
+  border: 2px solid #4a4a4a;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  font-family: "saintcarnsolas", monospace;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.secondary-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  box-shadow: inset 0 -4px #4a4a4a;
+  pointer-events: none;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.secondary-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.secondary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.game-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  border: 20px solid var(--game-bg-color);
+  border-image: url("https://sc-25.cdn.cbj-x.com/nuts-n-lights-border.webp") 31% fill / 20px / 15px space;
+  background-color: var(--game-bg-color);
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+.race-track-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.dice-display {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  border: 2px solid var(--terminal-green);
+  flex-shrink: 0;
+}
+
+@media (max-height: 900px) {
+  .dice-display {
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.dice-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+@media (max-height: 900px) {
+  .dice-info {
+    gap: 1rem;
+  }
+}
+
+.roll-used, .next-roll, .timing-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.roll-label {
+  font-size: 0.9rem;
+  color: var(--off-white);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.roll-value {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--off-white);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  background: var(--terminal-green);
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 2px solid #003210;
+  min-width: 55px;
+  text-align: center;
+  box-shadow: inset 0 -4px #003e1a, 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-height: 900px) {
+  .roll-value {
+    font-size: 1.5rem;
+    padding: 0.3rem 0.6rem;
+    min-width: 45px;
+  }
+  
+  .roll-label {
+    font-size: 0.8rem;
+  }
+}
+
+.roll-used .roll-value {
+  background: #6c757d;
+  border-color: #4a4a4a;
+  opacity: 0.7;
+  box-shadow: inset 0 -4px #4a4a4a, 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.timing-bar {
+  position: relative;
+  width: 30px;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--terminal-green);
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+@media (max-height: 900px) {
+  .timing-bar {
+    height: 60px;
+    width: 25px;
+  }
+}
+
+.timing-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: height 0.3s ease, background 0.3s ease;
+  border-radius: 0 0 3px 3px;
+}
+
+.timing-value {
+  position: relative;
+  z-index: 2;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--off-white);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  margin-bottom: 5px;
+}
+
+.race-track-container h2 {
+  color: var(--off-white);
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.race-track {
+  flex: 1;
+  background: linear-gradient(135deg, #0f4c3a, #1a6b4f, #0f4c3a);
+  border-radius: 8px;
+  padding: 0.75rem;
+  border: 3px solid var(--terminal-green);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  width: 100%;
+  min-height: 0;
+}
+
+@media (max-height: 900px) {
+  .race-track {
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+}
+
+.race-lane {
+  display: flex;
+  align-items: center;
+  margin: 0.3rem 0;
+  background: linear-gradient(90deg, rgba(0, 96, 30, 0.2), rgba(0, 96, 30, 0.05));
+  border-radius: 8px;
+  padding: 0.6rem;
+  border: 1px solid rgba(0, 96, 30, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-height: 900px) {
+  .race-lane {
+    margin: 0.2rem 0;
+    padding: 0.4rem;
+    border-radius: 6px;
+  }
+}
+
+.lane-label {
+  width: 200px;
+  max-width: 200px;
+  font-weight: 700;
+  color: var(--off-white);
+  text-align: left;
+  padding-right: 1.5rem;
+  font-size: 1rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.horse-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.horse-position {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-left: 0.5rem;
+}
+
+.lane {
+  flex: 1;
+  background: linear-gradient(to right, #4a2c2a, #8B4513, #A0522D, #8B4513, #4a2c2a);
+  height: 50px;
+  border-radius: 12px;
+  position: relative;
+  border: 2px solid #2c1810;
+  overflow: hidden;
+  margin: 0 1rem;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-height: 900px) {
+  .lane {
+    height: 40px;
+    margin: 0 0.5rem;
+    border-radius: 8px;
+  }
+}
+
+.horse {
+  position: absolute;
+  top: 8px;
+  transition: left 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 10;
+  animation: gallop 0.8s infinite ease-in-out;
+}
+
+.horse-image {
+  height: 35px;
+  width: auto;
+  display: block;
+}
+
+@media (max-height: 900px) {
+  .horse-image {
+    height: 28px;
+  }
+  
+  .horse {
+    top: 5px;
+  }
+}
+
+.player-horse .horse-image {
+  filter: hue-rotate(200deg) saturate(1.5) brightness(1.2);
+}
+
+.horse:nth-child(1) .horse-image { filter: hue-rotate(0deg) saturate(1.2); }     /* Red */
+.horse:nth-child(2) .horse-image { filter: hue-rotate(60deg) saturate(1.2); }    /* Orange */  
+.horse:nth-child(3) .horse-image { filter: hue-rotate(120deg) saturate(1.2); }   /* Green */
+.horse:nth-child(4) .horse-image { filter: hue-rotate(180deg) saturate(1.2); }   /* Cyan */
+.horse:nth-child(5) .horse-image { filter: hue-rotate(240deg) saturate(1.2); }   /* Purple */
+.horse:nth-child(6) .horse-image { filter: hue-rotate(300deg) saturate(1.2); }   /* Magenta */
+
+@keyframes gallop {
+  0%, 100% { 
+    transform: rotate(0deg) translateY(0px); 
+  }
+  25% { 
+    transform: rotate(2deg) translateY(-2px); 
+  }
+  50% { 
+    transform: rotate(0deg) translateY(0px); 
+  }
+  75% { 
+    transform: rotate(-2deg) translateY(-1px); 
+  }
+}
+
+.horse.winner {
+  animation: victory 1.5s infinite;
+}
+
+@keyframes victory {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  40% { transform: translateY(-12px) scale(1.2) rotate(5deg); }
+  60% { transform: translateY(-6px) scale(1.1) rotate(-5deg); }
+}
+
+.finish-line {
+  position: absolute;
+  right: 12%;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #fff 0px,
+    #fff 8px,
+    #ff4444 8px,
+    #ff4444 16px
+  );
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.position-marker {
+  min-width: 70px;
+  font-weight: 700;
+  color: #fff;
+  font-size: 1rem;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.race-controls {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.75rem;
+  border: 2px solid var(--terminal-green);
+  flex-shrink: 0;
+  text-align: center;
+}
+
+@media (max-height: 900px) {
+  .race-controls {
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+  }
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.gameplay {
+  text-align: center;
+}
+
+.dash-button {
+  background: var(--sc-orange);
+  color: var(--off-white);
+  border: 2px solid #702d00;
+  padding: 1.2rem 3rem;
+  border-radius: 12px;
+  font-size: 1.6rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  margin: 0 1rem 0.5rem 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15), 5px 14px 20px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: "saintcarnsolas", monospace;
+  position: relative;
+}
+
+.dash-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  box-shadow: inset 0 -6px #702d00, 0 -2px var(--sc-orange);
+  pointer-events: none;
+}
+
+@media (max-height: 900px) {
+  .dash-button {
+    padding: 0.9rem 2.5rem;
+    font-size: 1.3rem;
+    margin: 0 0.5rem 0.5rem 0;
+  }
+}
+
+.dash-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 5px 16px 22px rgba(0, 0, 0, 0.2);
+}
+
+.dash-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.dash-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  background: #666;
+  border-color: #333;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.stat-value {
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.2rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.gameplay {
+  text-align: center;
+}
+
+.gameplay h3 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+
+.controls {
+  margin-top: 2rem;
+}
+
+.error,
+.error-banner {
+  background: rgba(226, 34, 0, 0.2);
+  color: var(--off-white);
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 2px solid var(--red);
+  font-family: "saintcarnsolas", monospace;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .setup-section {
+    margin: 1rem;
+    padding: 2rem 1rem;
+  }
+  
+  .input-group {
+    flex-direction: column;
+  }
+  
+  .input-group input {
+    min-width: unset;
+  }
+  
+  .race-track {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  
+  .race-lane {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.8rem;
+  }
+  
+  .lane-label {
+    min-width: unset;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    padding-right: 0;
+  }
+  
+  .lane {
+    margin: 0.5rem 0;
+    height: 40px;
+  }
+  
+  .horse {
+    font-size: 1.5rem;
+    top: 5px;
+  }
+  
+  .position-marker {
+    text-align: center;
+    padding-top: 0.5rem;
+  }
+  
+  .race-controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .race-controls .stats {
+    min-width: unset;
+  }
+  
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .dash-button {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* Race Result Modal */
+.race-result-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.race-result-modal {
+  background-image: url("https://sc-25.cdn.cbj-x.com/rust-backdrop.webp");
+  background-repeat: no-repeat;
+  background-position: center center;
+  border: 20px solid var(--game-bg-color);
+  border-image: url("https://sc-25.cdn.cbj-x.com/gold_border.webp") 20% fill;
+  border-radius: 15px;
+  padding: 3rem;
+  text-align: center;
+  color: var(--off-white);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  max-width: 500px;
+  width: 90%;
+}
+
+.race-result-modal h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  color: var(--sc-orange);
+  font-family: "SDDystopian", monospace;
+}
+
+.race-result-modal p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  opacity: 0.95;
+  font-family: "saintcarnsolas", monospace;
+}
+
+.race-result-modal .final-roll {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.final-standings {
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.final-standings h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  color: var(--off-white);
+}
+
+.standings-list {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 2px solid var(--terminal-green);
+}
+
+.standing-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background: rgba(0, 96, 30, 0.2);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(0, 96, 30, 0.3);
+}
+
+.standing-item:last-child {
+  margin-bottom: 0;
+}
+
+.standing-item.player-standing {
+  background: rgba(224, 90, 0, 0.3);
+  border: 2px solid var(--sc-orange);
+  font-weight: bold;
+}
+
+.placement {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #FFD700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  min-width: 50px;
+}
+
+.horse-name-standing {
+  flex: 1;
+  padding: 0 1rem;
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.horse-position-standing {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  font-weight: 600;
+}
+
+@media (max-height: 900px) {
+  .race-result-modal {
+    padding: 2rem;
+    max-width: 450px;
+  }
+  
+  .race-result-modal h2 {
+    font-size: 2rem;
+  }
+  
+  .race-result-modal p {
+    font-size: 1rem;
+  }
+  
+  .final-standings h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .standings-list {
+    max-height: 200px;
+    padding: 0.75rem;
+  }
+  
+  .standing-item {
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.4rem;
+  }
+}

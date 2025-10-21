@@ -1,0 +1,7 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+
+GET     /                           controllers.GameController.index()
+GET     /health                     controllers.GameController.health()
+POST    /guess                      controllers.GameController.guess()
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

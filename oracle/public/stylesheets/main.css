@@ -1,0 +1,541 @@
+@font-face {
+    font-family: "saintcarnsolas";
+    src: url("https://sc-25.cdn.cbj-x.com/saintcarnsolas.woff") format("woff"),
+    url("https://sc-25.cdn.cbj-x.com/saintcarnsolas.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "a dripping marker";
+    src: url("https://sc-25.cdn.cbj-x.com/adrip1.woff") format("woff"),
+    url("https://sc-25.cdn.cbj-x.com/adrip1.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "SDDystopian";
+    src: url("https://sc-25.cdn.cbj-x.com/SDDystopian.woff") format("woff"),
+    url("https://sc-25.cdn.cbj-x.com/SDDystopian.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
+    --game-bg-color: #171717;
+    --sc-orange: #e05a00;
+    --sc-red: #693126;
+    --blue: #3686ff;
+    --red: #e02200;
+    --yellow: #fcf300;
+    --off-white: #e4ffe4;
+    --violet: #767b91;
+    --terminal-green: #00c961;
+    --correct: rgb(83, 141, 78);
+    --present: rgb(181, 159, 59);
+    --absent: rgb(58, 58, 60);
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    transition: transform 0.5s;
+
+    * {
+        color: var(--off-white)
+    }
+}
+
+.carnival {
+    background-image: url("https://sc-25.cdn.cbj-x.com/backdrop.webp");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+
+    /* Unreasonable styling requests */
+    @media only screen and (max-width: 450px) {
+        * {
+            scale: 90%;
+        }
+    }
+    @media only screen and (max-width: 350px) {
+        * {
+            scale: 80%;
+        }
+    }
+    @media only screen and (max-width: 250px) {
+        * {
+            scale: 70%;
+        }
+    }
+}
+
+main {
+    margin: 50px;
+    padding: 1.2rem;
+    background-image: url("https://sc-25.cdn.cbj-x.com/rust-backdrop.webp");
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 15px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 800px;
+}
+
+header {
+    background-image: url("https://sc-25.cdn.cbj-x.com/sign-black.webp");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    margin-bottom: -7rem;
+    z-index: 10;
+    padding: 1.4rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    rotate: 5deg;
+    letter-spacing: 4px;
+
+    h1 {
+        font-family: "SDDystopian", monospace;
+        color: var(--sc-orange);
+    }
+
+    p {
+        position: absolute;
+        font-family: "a dripping marker", Arial, sans-serif;
+        font-size: 2em;
+        color: var(--off-white);
+        letter-spacing: 5px;
+        rotate: -5deg;
+        margin: 0 1px 1px 1px;
+        right: 50%;
+        translate: 50%;
+        bottom: 2px;
+    }
+}
+
+.game {
+    border: 20px solid var(--game-bg-color);
+    border-image: url("https://sc-25.cdn.cbj-x.com/nuts-n-lights-border.webp") 31% fill / 20px / 15px space;
+    background-color: var(--game-bg-color);
+    padding: 4rem 1rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+
+    * {
+        font-family: "saintcarnsolas", monospace;
+    }
+}
+
+.controls {
+    margin: 20px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.glitch-input-wrapper {
+    --bg-color: #0d0d0d;
+    --primary-color: #00ff51;
+    --secondary-color: #ff7316;
+    --glitch-anim-duration: 0.4s;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    padding: 1rem;
+    margin-top: -2.5rem;
+}
+
+/* --- Container  --- */
+.input-container {
+    position: relative;
+    width: 19rem;
+}
+
+/* --- Input --- */
+.holo-input {
+    width: 90%;
+    height: 3rem;
+    background: rgba(13, 13, 13, 0.7);
+    border: none;
+    border-bottom: 2px solid #333;
+    outline: none;
+    padding: 0 1rem;
+    color: var(--off-white);
+    font-family: inherit;
+    font-size: 1.7rem;
+    caret-color: var(--primary-color);
+    z-index: 10;
+    transition: background 0.3s ease,
+        border-color 0.3s ease;
+    text-align: center;
+}
+
+/* --- Floating Label --- */
+.input-label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: var(--off-white);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 11;
+}
+
+.holo-input:focus + .input-label,
+.holo-input:not(:placeholder-shown) + .input-label {
+    top: -1.5rem;
+    left: 0;
+    font-size: 0.8rem;
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+.holo-input:focus + .input-label::before,
+.holo-input:focus + .input-label::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #212121;
+}
+
+.holo-input:focus + .input-label::before {
+    color: var(--secondary-color);
+    animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.holo-input:focus + .input-label::after {
+    color: var(--off-white);
+    animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+}
+
+/* --- Decorative Layers --- */
+.input-border,
+.input-scanline,
+.input-glow,
+.input-corners {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.input-border {
+    border: 1px solid rgba(0, 242, 234, 0.2);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.corner {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--primary-color);
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+
+.corner-tl {
+    top: -0.3rem;
+    left: -0.3rem;
+    border-right: none;
+    border-bottom: none;
+}
+
+.corner-tr {
+    top: -0.3rem;
+    right: -0.3rem;
+    border-left: none;
+    border-bottom: none;
+}
+
+.corner-bl {
+    bottom: -0.3rem;
+    left: -0.3rem;
+    border-right: none;
+    border-top: none;
+}
+
+.corner-br {
+    bottom: -0.3rem;
+    right: -0.3rem;
+    border-left: none;
+    border-top: none;
+}
+
+.input-glow {
+    background: radial-gradient(
+            ellipse at center,
+            rgba(0, 242, 234, 0.2) 0%,
+            transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.input-scanline {
+    height: 100%;
+    background: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(0, 242, 234, 0.1) 48%,
+            rgba(0, 242, 234, 0.3) 50%,
+            rgba(0, 242, 234, 0.1) 52%,
+            transparent 100%
+    );
+    opacity: 0;
+}
+
+/* --- Data Visualization --- */
+.input-data-stream {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 100%;
+    height: 0.3rem;
+    display: flex;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.1s;
+}
+
+.stream-bar {
+    flex-grow: 1;
+    background-color: var(--primary-color);
+    transition: transform 0.2s,
+    opacity 0.2s;
+    transform: scaleY(0);
+    transform-origin: bottom;
+}
+
+.holo-input:focus {
+    border-color: transparent;
+}
+
+.holo-input:focus ~ .input-border {
+    opacity: 1;
+    border-color: rgba(0, 242, 234, 0.5);
+}
+
+.holo-input:focus ~ .input-corners .corner {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-width: 3px;
+    opacity: 1;
+}
+
+.holo-input:focus ~ .input-glow {
+    opacity: 1;
+}
+
+.holo-input:focus ~ .input-scanline {
+    animation: scan-vertical 4s linear infinite;
+}
+
+.holo-input:focus ~ .input-data-stream {
+    opacity: 1;
+}
+
+.holo-input:focus ~ .input-data-stream .stream-bar {
+    animation: data-pulse 2s infinite;
+    animation-delay: calc(var(--i) * 0.1s);
+}
+
+/* --- Keyframes --- */
+@keyframes glitch-label {
+    0% {
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+    }
+    20% {
+        transform: translate(-0.2rem, 0.1rem);
+        clip-path: inset(50% 0 20% 0);
+    }
+    40% {
+        transform: translate(0.1rem, -0.1rem);
+        clip-path: inset(20% 0 60% 0);
+    }
+    60% {
+        transform: translate(-0.15rem, 0.1rem);
+        clip-path: inset(80% 0 5% 0);
+    }
+    80% {
+        transform: translate(0.15rem, -0.15rem);
+        clip-path: inset(30% 0 45% 0);
+    }
+    100% {
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes scan-vertical {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    25% {
+        opacity: 0.5;
+    }
+    75% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+}
+
+@keyframes data-pulse {
+    0%,
+    100% {
+        transform: scaleY(0.2);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scaleY(1);
+        opacity: 0.8;
+    }
+}
+
+.three-dee-button {
+    background: #fff;
+    border: 2px solid #888;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 10px;
+    outline: none;
+    margin-top: .5rem;
+    padding: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15), 5px 14px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.1s ease-in-out;
+
+    &#submit {
+        background: var(--terminal-green);
+        border: 2px solid #003210;
+        .three-dee-button__text {
+            color: var(--game-bg-color);
+        }
+
+        .three-dee-button__content {
+            box-shadow: inset 0 -6px #003e1a, 0 -2px var(--terminal-green);
+        }
+    }
+
+    &#try-again {
+        background: var(--sc-red);
+        border: 2px solid var(--sc-red);
+
+        .three-dee-button__content {
+            box-shadow: inset 0 -6px #551d12, 0 -2px #551d12;
+        }
+    }
+}
+
+.three-dee-button__content {
+    display: block;
+    padding: 12px 40px;
+    border-radius: 8px;
+    transition: all 0.1s ease-in-out;
+}
+
+.three-dee-button__text {
+    color: var(--off-white);
+    display: block;
+    transform: translate3d(0, -4px, 0);
+    transition: all 0.1s ease-in-out;
+    font-size: 1.2em;
+}
+
+.three-dee-button:active {
+    box-shadow: none;
+}
+
+.three-dee-button:active .three-dee-button__content {
+    box-shadow: none;
+}
+
+.three-dee-button:active .three-dee-button__text {
+    transform: translate3d(0, 0, 0);
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    49% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 100%;
+    }
+    99% {
+        opacity: 100%;
+    }
+}
+
+.infobox {
+    margin-top: -2rem;
+    border: 20px solid var(--game-bg-color);
+    border-image: url("https://sc-25.cdn.cbj-x.com/metal_border.webp") 20% fill;
+    background-color: #0f0f0f;
+    border-radius: 15px;
+    text-align: left;
+    width: 100%;
+    max-width: 800px;
+
+    p {
+        font-size: 1.4em;
+        margin: 0;
+        &.ask {
+            color: var(--blue);
+            span:not(:nth-child(1)) {
+                opacity: 25%;
+            }
+        }
+    }
+    .message {
+        text-align: center;
+        border-width: 2px;
+        border-color: var(--terminal-green);
+        border-style: dashed solid;
+        padding: 8px;
+        margin: 12px 4px 4px 4px;
+        font-size: 1.7em;
+
+        &.success {
+            color: var(--sc-orange);
+        }
+        &.error {
+            color: var(--red);
+        }
+        &.info {
+            color: var(--off-white);
+        }
+    }
+    * {
+        color: var(--terminal-green);
+    }
+}

@@ -1,0 +1,13 @@
+venv/
+.idea/
+__pycache__/
+target/
+results/
+nonce.txt
+CRingToss/ring
+DerbyRace/frontend/.vite/deps/_metadata.json
+DerbyRace/frontend/.vite/deps/package.json
+*.zip
+out.json
+wheel
+*.sln
