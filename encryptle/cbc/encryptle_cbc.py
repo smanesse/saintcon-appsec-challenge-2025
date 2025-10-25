@@ -22,6 +22,8 @@ def write_score(score):
 
 
 def get_score(guess, word):
+    if not word or not guess:
+        return 0
     score = 0
     if len(guess) != len(word):
         return 0
@@ -116,39 +118,38 @@ def cbc_check():
     solution = decrypt_cbc(request.cookies.get("answer"))
     try:
         solution = json.loads(solution)
-        if check_time(solution['ts']) and check_nonce(solution['nonce']):
-            num_tries += 1
-            guess = request.get_json().get('guess').lower()
-            score = get_score(guess, solution['word'])
-            if score > top_score:
-                top_score = score
-            
-            # max tries or max score, finish and write score
-            if num_tries == 5 or score == 3 * 4:  # max score
-                write_score(top_score)
-            
-            # Check if guess is exactly correct
-            if guess == solution['word'].lower():
-                return jsonify({
-                    "answer": solution['word'],
-                    "score": score,
-                    "correct": True,
-                    "tries": num_tries,
-                    "message": f"Correct! The word was: {solution['word']}"
-                }), 200
-            else:
-                # Check if this is the final try
-                if num_tries >= 5:
-                    message = f"Score: {score}. The word was: {solution['word']}."
-                else:
-                    message = f"Score: {score}. The word was: {solution['word']}. Try again!"
-                return jsonify({
-                    "answer": solution['word'],
-                    "score": score,
-                    "correct": False,
-                    "tries": num_tries,
-                    "message": message
-                }), 200
     except:
+        solution = None
         pass
-    return "Something was wrong with your request.", 400
+    num_tries += 1
+    guess = request.get_json().get('guess').lower()
+    score = get_score(guess, solution['word'])
+    if score > top_score:
+        top_score = score
+    
+    # max tries or max score, finish and write score
+    if num_tries == 5 or score == 3 * 4:  # max score
+        write_score(top_score)
+    
+    # Check if guess is exactly correct
+    if solution and check_time(solution['ts']) and check_nonce(solution['nonce']) and guess == solution['word'].lower():
+        return jsonify({
+            "answer": solution['word'],
+            "score": score,
+            "correct": True,
+            "tries": num_tries,
+            "message": f"Correct! The word was: {solution['word']}"
+        }), 200
+    else:
+        # Check if this is the final try
+        if num_tries >= 5:
+            message = f"Score: {score}. The word was: {solution['word']}."
+        else:
+            message = f"Score: {score}. The word was: {solution['word']}. Try again!"
+        return jsonify({
+            "answer": solution['word'],
+            "score": score,
+            "correct": False,
+            "tries": num_tries,
+            "message": message
+        }), 200
