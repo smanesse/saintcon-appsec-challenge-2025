@@ -16,7 +16,8 @@ else:
 EXP = 60
 SHARED_DIR = "/shared"
 
-IV = os.urandom(12)
+def gen_iv():
+    return os.urandom(12)
 
 num_tries = 0
 top_score = 0
@@ -68,18 +69,20 @@ def check_time(ts):
 
 
 def encrypt_gcm(plaintext):
-    cipher = Cipher(algorithms.AES(KEY), modes.GCM(IV), backend=default_backend())
+    iv = gen_iv()
+    cipher = Cipher(algorithms.AES(KEY), modes.GCM(iv), backend=default_backend())
     encryptor = cipher.encryptor()
     ciphertext = encryptor.update(plaintext.encode()) + encryptor.finalize()
     tag = encryptor.tag
-    return (ciphertext + tag).hex()
+    return (iv + ciphertext + tag).hex()
 
 
 def decrypt_gcm(encrypted_hex):
     encrypted_data = bytes.fromhex(encrypted_hex)
     tag = encrypted_data[-16:]
-    ciphertext = encrypted_data[:-16]
-    cipher = Cipher(algorithms.AES(KEY), modes.GCM(IV, tag), backend=default_backend())
+    ciphertext = encrypted_data[12:-16]
+    iv = encrypted_data[:12]
+    cipher = Cipher(algorithms.AES(KEY), modes.GCM(iv, tag), backend=default_backend())
     decryptor = cipher.decryptor()
     plaintext = decryptor.update(ciphertext) + decryptor.finalize()
     return plaintext.decode()
