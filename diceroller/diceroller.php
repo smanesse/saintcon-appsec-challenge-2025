@@ -461,7 +461,7 @@
 
                     $num20 = 0;
                     $diceResults = [];
-                    if ($base20Hash == "000000000000000000000000000000") {
+                    if ($base20Hash === "000000000000000000000000000000") {
                         echo "<h1>You win!!! flag{}</h1>";
                         $num20 = 30;
                         $diceResults = array_fill(0, 30, 20);
