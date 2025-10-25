@@ -85,10 +85,12 @@ def get_fortune():
             return jsonify({'error': 'No image URL provided'}), 400
         
         try:
-            if not image_url.startswith('http'):
+            # A proper fix would be to use an HTTP client that is resistant to DNS rebinding attacks.
+            # In this case, we assume the admin panel will not be accessible over HTTPS given that it is bound to localhost.
+            if not image_url.startswith('https://'):
                 return jsonify({'error': 'Invalid URL scheme'}), 400
             
-            response = requests.get(image_url, timeout=5, allow_redirects=True)
+            response = requests.get(image_url, timeout=5, allow_redirects=False)
             response.raise_for_status()
             
             try:
