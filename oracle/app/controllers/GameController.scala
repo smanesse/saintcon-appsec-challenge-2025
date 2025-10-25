@@ -6,7 +6,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.i18n._
-import java.util.Random
+import java.security.SecureRandom
 import java.io.{File, FileWriter, PrintWriter}
 import scala.util.{Try, Success, Failure}
 import scala.collection.mutable
@@ -16,7 +16,7 @@ case class GameState(targetNumber: Int, attempts: Int, guesses: List[Int])
 
 object GameStateStore {
   private val gameStates = mutable.Map[String, GameState]()
-  private val random = new Random()
+  private val random = new SecureRandom()
   
   def createGame(): (String, GameState) = {
     val sessionId = UUID.randomUUID().toString
