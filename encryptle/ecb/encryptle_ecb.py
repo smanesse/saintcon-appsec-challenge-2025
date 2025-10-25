@@ -1,8 +1,9 @@
 from flask import Flask, request, make_response, jsonify
 import random
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives import padding, hashes, hmac
 from cryptography.hazmat.backends import default_backend
+from cryptography.exceptions import InvalidSignature
 import os
 import json
 from datetime import datetime, timezone
@@ -67,16 +68,27 @@ def encrypt_ecb(plaintext):
     cipher = Cipher(algorithms.AES(KEY), modes.ECB(), backend=default_backend())
     encryptor = cipher.encryptor()
     ciphertext = encryptor.update(padded_data) + encryptor.finalize()
+    h = hmac.HMAC(KEY, hashes.SHA1())
+    h.update(padded_data)
+    ciphertext += h.finalize()
     return ciphertext.hex()
 
 
 def decrypt_ecb(encrypted_hex):
-    ciphertext = bytes.fromhex(encrypted_hex)
+    cookie_bytes = bytes.fromhex(encrypted_hex)
+    ciphertext = cookie_bytes[:-20]
+    hmac_bytes = cookie_bytes[-20:]
     cipher = Cipher(algorithms.AES(KEY), modes.ECB(), backend=default_backend())
     decryptor = cipher.decryptor()
     padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
     unpadder = padding.PKCS7(128).unpadder()
     plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
+    h = hmac.HMAC(KEY, hashes.SHA1())
+    h.update(padded_plaintext)
+    try:
+        h.verify(hmac_bytes)
+    except InvalidSignature:
+        return False
     return plaintext.decode()
 
 
