@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using Sp1nwh33l;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +33,7 @@ app.MapGet("/api/state", (GameState gameState) =>
     }
 });
 
-app.MapPost("/api/spin", (SpinRequest request, GameState gameState, HttpResponse response) =>
+app.MapPost("/api/spin", (GameState gameState, HttpResponse response) =>
 {
     lock (gameState)
     {
@@ -41,8 +42,8 @@ app.MapPost("/api/spin", (SpinRequest request, GameState gameState, HttpResponse
             response.StatusCode = 403;
             return Results.Content("no-spins", "text/plain");
         }
-
-        var normalizedAngle = NormalizeAngle(request.Angle);
+        var next = RandomNumberGenerator.GetInt32(1, 360);
+        var normalizedAngle = NormalizeAngle(next);
         var prize = GetPrizeForAngle(normalizedAngle);
 
         gameState.Points += prize;
