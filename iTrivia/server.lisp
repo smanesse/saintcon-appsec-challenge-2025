@@ -53,7 +53,7 @@
 (defparameter +unauthorized+ `(403 ,+headers+ ("Unauthorized")) "Unauthorized response")
 
 (defun user-check (headers)
-  (let ((res (dbex "SELECT * FROM users WHERE code = '" (gethash "user" headers) "'")))
+  (let ((res (dbex "SELECT * FROM users WHERE code = '" (format-value (gethash "user" headers)) "'")))
     (if res (first res) nil)))
 
 (defmacro http-enforce-for (name &rest clauses) `(unless (and ,@clauses t) (return-from ,name +unauthorized+)))
