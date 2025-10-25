@@ -90,11 +90,12 @@ func (s *Server) HandleSubmitScore(w http.ResponseWriter, r *http.Request) {
 
 	newHighScore := false
 
-	if submission.Score > s.gameState.HighScore {
-		s.gameState.HighScore = submission.Score
+	calculatedScore := len(session.Trail)
+	if calculatedScore > s.gameState.HighScore {
+		s.gameState.HighScore = calculatedScore
 		s.gameState.TopPlayer = "CHALLENGER"
 		newHighScore = true
-		logMsg := fmt.Sprintf("New high score achieved: %d", submission.Score)
+		logMsg := fmt.Sprintf("New high score achieved: %d", calculatedScore)
 		log.Print(logMsg)
 		s.addToLogBuffer(logMsg)
 	}
@@ -134,3 +135,4 @@ func (s *Server) isValidCrash(head Position, trail []Position) bool {
 	s.addToLogBuffer(logMsg)
 	return false
 }
+
