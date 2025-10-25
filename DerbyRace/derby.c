@@ -115,7 +115,8 @@ static struct player_session* get_or_create_session() {
 
 static void set_horse_name_and_emblem(struct horse* h, const char* name_str, unsigned char emblem_id) {
     h->horse_emblem_id = emblem_id;
-    strcpy(h->name, name_str);
+    strncpy(h->name, name_str, HORSE_NAME_LEN - 1);
+    h->name[HORSE_NAME_LEN - 1] = '\0';
 }
 
 static void handle_setup(struct mg_connection *c, struct mg_http_message *hm) {
